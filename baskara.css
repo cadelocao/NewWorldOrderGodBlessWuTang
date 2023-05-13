@@ -1,6 +1,6 @@
 body {
   font-family: "Courier New", Courier, monospace;
-  background-color: #627fcc;
+  background-color: grey;
   display: flex;
   flex-direction: column;
   align-items: center;
