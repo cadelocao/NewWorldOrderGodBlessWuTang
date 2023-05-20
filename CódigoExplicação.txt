@@ -1,0 +1,35 @@
+import subprocess
+from ignorar import redes
+informacoes = subprocess.check_output(["netsh", "wlan", "show", "profiles"], encoding='cp860').split("\n")
+
+perfis = [i.split(":")[1][1:] for i in informacoes if "Todos os Perfis de Usuários" in i]
+for item in perfis:
+    if item not in redes:
+        results = subprocess.check_output(["netsh", "wlan", "show", "profile", item, "key=clear"], encoding="cp860").split("\n")
+
+        #print(results)
+        results = [b.split(":")[1][1:] for b in results if "Conteúdo da Chave" in b]
+        try:
+            print(f"Rede: {item}, Senha: {results[0]}")
+        except IndexError:
+            print(f"Rede: {item}, Sem senha")
+
+Este código em Python utiliza o módulo 'subprocess' para executar comandos no prompt de comando do sistema operacional. O objetivo do código é obter informações sobre as redes Wi-Fi salvas no computador e exibir seus nomes e senhas, caso existam.
+
+A primeira linha do código importa o módulo 'subprocess'. A segunda linha importa um arquivo redes que contém uma lista de nomes de redes Wi-Fi que devem ser ignoradas (não exibidas). Essa linha pode gerar um erro se o arquivo 'redes' não existir ou se a lista estiver mal formatada.
+
+A terceira linha utiliza o subprocess para executar o comando netsh wlan show profiles no prompt de comando do sistema operacional. Esse comando lista todas as redes Wi-Fi salvas no computador. A opção encoding='cp860' é utilizada para especificar a codificação do prompt de comando. A saída desse comando é uma string contendo várias informações, incluindo os nomes das redes Wi-Fi.
+
+A quarta linha do código separa a string em uma lista de strings utilizando o caractere de nova linha \n. Cada item dessa lista contém informações sobre uma rede Wi-Fi. A lista resultante é atribuída à variável informacoes.
+
+A quinta linha utiliza uma compreensão de lista para extrair os nomes dos perfis de rede Wi-Fi da lista informacoes. A lista resultante é atribuída à variável perfis. O comando split(":")[1][1:] é utilizado para extrair apenas o nome do perfil, eliminando espaços e outros caracteres desnecessários.
+
+A sexta linha inicia um loop for que itera sobre cada perfil de rede Wi-Fi em perfis. A estrutura if dentro do loop verifica se o perfil deve ser ignorado, comparando-o com a lista redes. Se o perfil não estiver na lista redes, o código continua.
+
+A sétima linha utiliza o subprocess para executar o comando netsh wlan show profile <perfil> key=clear no prompt de comando do sistema operacional, onde <perfil> é o nome do perfil atual no loop. Esse comando exibe as informações detalhadas do perfil, incluindo a senha, se ela existir. A opção encoding='cp860' é utilizada novamente para especificar a codificação do prompt de comando. A saída desse comando é uma string contendo várias informações, incluindo a senha da rede Wi-Fi.
+
+A oitava linha do código separa a string em uma lista de strings utilizando o caractere de nova linha \n. Cada item dessa lista contém informações sobre a rede Wi-Fi atual. A lista resultante é atribuída à variável results.
+
+A nona linha utiliza outra compreensão de lista para extrair a senha da rede Wi-Fi da lista results. A lista resultante contém apenas a senha da rede Wi-Fi, sem espaços ou outros caracteres desnecessários. A estrutura try/except é utilizada para lidar com o caso em que a lista results não contém a senha da rede Wi-Fi.
+
+A décima linha exibe as informações da rede Wi-Fi atual na tela, incluindo o nome da rede e sua senha, se ela existir. O código imprime a mensagem "Sem senha" se a rede Wi-Fi não tiver uma senha.
